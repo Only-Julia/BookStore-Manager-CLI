@@ -27,7 +27,7 @@ function criarPool(): pg.Pool {
 export const pool = criarPool();
 
 pool.on('error', (err: Error) => {
-    console.error('Erro inesperado no cliente do banco de dados', err);
+    console.error(' [ERRO] Erro inesperado no cliente do banco de dados', err);
 });
 
 
@@ -37,13 +37,13 @@ export async function testarConexao(): Promise<void> {
         const linha = resultado.rows[0];
 
         if(linha === undefined){
-            throw new Error('O banco respondeu mas não retornou dados.');
+            throw new Error('[ERRO] O banco respondeu mas não retornou dados.');
         }
     }
     catch(erro) {
         const detalhe = erro instanceof Error ? erro.message : String(erro);
         throw new DatabaseError(
-            `Não foi possível conectar ao PostgreSQL. Verifique o arquivo .env e se o banco está no ar. Detalhe: ${detalhe}`
+            `[ERRO] Não foi possível conectar ao PostgreSQL. Verifique o arquivo .env e se o banco está no ar. Detalhe: ${detalhe}`
         );
     }
 }
