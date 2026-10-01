@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "tsx src/main.ts",
     "db:create": "tsx src/database/criarBanco.ts",
+    "db:migrate": "tsx src/database/migrate.ts",
+    "db:reset": "tsx src/database/migrate.ts --reset",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
