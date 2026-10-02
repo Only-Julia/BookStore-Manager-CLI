@@ -9,10 +9,11 @@ export class AutorService {
         this.autorRepository = autorRepository;
     }
 
+    // Valida se o nome foi informado e se ainda não existe.
     async cadastrarAutor(autor: Autor): Promise<void> {
 
         if (!autor.nome) {
-            throw new Error("Nome do autor é obrigatório.");
+            throw new Error("[ERRO] Nome do autor é obrigatório.");
         }
 
         const autorExistente = await this.autorRepository.buscarPorNome(
@@ -20,7 +21,7 @@ export class AutorService {
         );
 
         if (autorExistente) {
-            throw new Error("Autor já existe.");
+            throw new Error("[ERRO] Autor já existe.");
         }
 
         await this.autorRepository.inserir(autor);
@@ -28,67 +29,73 @@ export class AutorService {
         console.log("[OK] Autor cadastrado com sucesso.");
     }
 
+    
+    // Valida se o autor existe, se o novo nome foi informado e se não é repetido.
+    async atualizarAutor(id: number,nome: string,nacionalidade: string,nascimento: Date | null): Promise<void> {
+        const autorExistente =
+            await this.autorRepository.buscarPorId(id);
 
-    async atualizarAutor(id: number, nome: string, pais: string): Promise<void> {
+        if (!autorExistente) {
+          throw new Error("[ERRO] Autor não encontrado.");
+        }
 
-    const autorExistente = await this.autorRepository.buscarPorId(id);
+        if (!nome) {
+            throw new Error("[ERRO] Nome do autor é obrigatório.");
+        }
 
-    if (!autorExistente) {
-        throw new Error("Autor não encontrado.");
+        const autorRepetido =
+          await this.autorRepository.buscarPorNome(nome);
+
+        if (autorRepetido && autorRepetido.id !== id) {
+            throw new Error("[ERRO] Já existe outro autor com esse nome.");
+        }
+
+        await this.autorRepository.atualizar({
+            id,
+            nome,
+            nacionalidade,
+            nascimento
+        });
+
+        console.log("[OK] Autor atualizado com sucesso.");
     }
 
-    if (!nome) {
-        throw new Error("Nome do autor é obrigatório.");
-    }
 
-    const autorComMesmoNome = await this.autorRepository.buscarPorNome(nome);
-
-    if (autorComMesmoNome && autorComMesmoNome.id !== id) {
-        throw new Error("Já existe outro autor com esse nome.");
-    }
-
-    await this.autorRepository.atualizar({
-        id,
-        nome,
-        nacionalidade: pais,
-        nascimento: autorExistente.nascimento
-    });
-
-    console.log("[OK] Autor atualizado com sucesso.");
-}
-
-    async buscarPorId(id: number): Promise<Autor | null> {
+    // Busca um autor pelo ID.
+    async buscarAutorPorId(id: number): Promise<Autor | null> {
 
         const autor = await this.autorRepository.buscarPorId(id);
 
         if (!autor) {
-            console.log("[AVISO] Autor não encontrado.");
+            console.log("[INFO] Autor não encontrado.");
             return null;
         }
-
-        console.log("[OK] Autor encontrado.");
 
         return autor;
     }
 
-    async listarTodos(): Promise<Autor[]> {
+
+    // Lista todos os autores cadastrados, ou lista vazia.
+    async listarTodosAutores(): Promise<Autor[]> {
 
         const autores = await this.autorRepository.listarTodos();
 
         if (autores.length === 0) {
-            console.log("[AVISO] Não há autores cadastrados.");
+            console.log("[INFO] Não há autores cadastrados.");
             return [];
         }
 
         return autores;
     }
 
-    async remover(id: number): Promise<void> {
+
+    // Remove um autor pelo ID.
+    async removerAutor(id: number): Promise<void> {
 
         const autorExistente = await this.autorRepository.buscarPorId(id);
 
         if (!autorExistente) {
-            throw new Error("Autor não encontrado.");
+            throw new Error("[ERRO] Autor não encontrado.");
         }
 
         await this.autorRepository.remover(id);
