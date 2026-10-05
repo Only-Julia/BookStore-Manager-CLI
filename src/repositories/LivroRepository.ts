@@ -139,5 +139,22 @@ export class LivroRepository {
             throw new Error("[ERRO] Não foi possível adicionar ao estoque.");
         }
     }
-}
 
+    async retirar(id: number, quantidade: number): Promise<boolean> {
+        try {
+            const resultado = await pool.query(
+                `UPDATE livros
+                SET estoque = estoque - $1
+                WHERE id = $2`,
+                [
+                    quantidade,
+                    id
+                ]
+            );
+
+            return (resultado.rowCount ?? 0) > 0;
+        } catch (error) {
+            throw new Error("[ERRO] Não foi possível retirar do estoque.");
+        }
+    }
+}
