@@ -2,12 +2,15 @@ import readline from "readline";
 
 import { AutorRepository } from "./repositories/AutorRepository.js";
 import { LivroRepository } from "./repositories/LivroRepository.js";
+import { ClienteRepository } from "./repositories/ClienteRepository.js";
 
 import { AutorService } from "./services/AutorService.js";
 import { LivroService } from "./services/LivroService.js";
+import { ClienteService } from "./services/ClienteService.js";
 
 import { AutorController } from "./controllers/AutorController.js";
 import { LivroController } from "./controllers/LivroController.js";
+import { ClienteController } from "./controllers/ClienteController.js";
 
 import { menuPrincipal } from "./menus/menuPrincipal.js";
 
@@ -25,6 +28,8 @@ const autorRepository = new AutorRepository();
 
 const livroRepository = new LivroRepository();
 
+const clienteRepository = new ClienteRepository();
+
 
 const autorService = new AutorService(
 
@@ -36,6 +41,12 @@ const livroService = new LivroService(
 
     livroRepository,
     autorRepository
+
+);
+
+const clienteService = new ClienteService(
+
+    clienteRepository
 
 );
 
@@ -56,11 +67,20 @@ const livroController = new LivroController(
 
 );
 
+const clienteController = new ClienteController(
+
+    clienteService,
+
+    rl
+
+);
+
 
 await menuPrincipal(
 
     autorController,
     livroController,
+    clienteController,
     rl
 
 );

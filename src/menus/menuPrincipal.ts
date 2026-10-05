@@ -1,12 +1,15 @@
 import { menuAutor } from "./menuAutor.js";
 import { menuLivro } from "./menuLivro.js";
+import { menuCliente } from "./menuCliente.js";
 import readline from "readline";
 import { AutorController } from "../controllers/AutorController.js";
 import { LivroController } from "../controllers/LivroController.js";
+import { ClienteController } from "../controllers/ClienteController.js";
 
 export async function menuPrincipal(
     autorController: AutorController,
     livroController: LivroController,
+    clienteController: ClienteController,
     rl: readline.Interface
 ): Promise<void> {
 
@@ -36,7 +39,7 @@ export async function menuPrincipal(
                 break;
 
             case "3":
-                console.log("[INFO] Menu de clientes ainda não implementado.");
+                await menuCliente(clienteController, rl);
                 break;
 
             case "4":
